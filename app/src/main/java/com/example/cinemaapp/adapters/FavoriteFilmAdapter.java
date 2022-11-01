@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,7 +19,6 @@ import com.example.cinemaapp.R;
 import com.example.cinemaapp.model.Film;
 import com.example.cinemaapp.repository.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -97,7 +95,6 @@ public class FavoriteFilmAdapter extends RecyclerView.Adapter<FavoriteFilmAdapte
         private final TextView expandIcon;
         private final TextView textViewDescription;
         private final RelativeLayout detailsOnExpand;
-        List<RadioButton> buttons = new ArrayList<>();
         private final Button favorite;
 
 
