@@ -20,7 +20,6 @@ public class FavoritesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         final View view = inflater.inflate(R.layout.fragment_favorites, container, false);
-        final Fragment pointerSaver = this;
 
         //Add recyclerView
         final RecyclerView recyclerView = view.findViewById(R.id.recycler_view_favorites);

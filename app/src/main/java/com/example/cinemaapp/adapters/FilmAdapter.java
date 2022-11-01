@@ -1,9 +1,8 @@
 package com.example.cinemaapp.adapters;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionManager;
 import android.view.LayoutInflater;
@@ -12,31 +11,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.cinemaapp.R;
 import com.example.cinemaapp.model.Film;
 import com.example.cinemaapp.repository.Repository;
-import com.example.cinemaapp.view.MakeReservationActivity;
 
-import java.sql.Date;
-import java.sql.Time;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmHolder> {
     private List<Film> filmlist = new ArrayList<>();
-    private Fragment contextGetter;
     private int mExpandedPosition = -1;
 
-    public FilmAdapter(Fragment contextGetter) {
-        this.contextGetter = contextGetter;
+    public FilmAdapter() {
     }
 
     @NonNull
@@ -47,24 +36,18 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmHolder> {
         return new FilmHolder(itemView);
     }
 
+    @SuppressLint({"SetTextI18n", "NotifyDataSetChanged"})
     @Override
-    public void onBindViewHolder(@NonNull final FilmHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final FilmHolder holder, @SuppressLint("RecyclerView") final int position) {
         Film currentFilm = filmlist.get(position);
         holder.filmObject = currentFilm;
         holder.poster.setImageResource(currentFilm.getImagePath());
         holder.textViewTitle.setText(currentFilm.getTitle());
         holder.textViewGenre.setText(currentFilm.getGenre());
-        holder.textViewRating.setText("  " + String.valueOf(currentFilm.getRating()));
+        holder.textViewRating.setText("  " + currentFilm.getRating());
         holder.textViewDescription.setText(currentFilm.getDescription());
 
-        HashMap<Time, List<Boolean>> thisFilmProgram = Repository.getHardcodedProgram().get(currentFilm.getTitle());
-        List<Time> times = new ArrayList<Time>(thisFilmProgram.keySet());
-        for (int i = 0; i < times.size(); i++) {
-            Date date = new Date(times.get(i).getTime());
-            DateFormat df = new SimpleDateFormat("kk:mm");
-            holder.buttons.get(i).setText(df.format(date));
-            holder.buttons.get(i).setVisibility(View.VISIBLE);
-        }
+
 
         boolean isFavorite = Repository.searchInFavorites(currentFilm);
         if (isFavorite) {
@@ -79,14 +62,12 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmHolder> {
         int expandedIconId = isExpanded ? R.drawable.ic_keyboard_arrow_up_black_24dp : R.drawable.ic_keyboard_arrow_down_black_24dp;
         holder.expandIcon.setCompoundDrawablesWithIntrinsicBounds(0, 0, expandedIconId, 0);
         holder.itemView.setActivated(isExpanded);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("NewApi")
-            @Override
-            public void onClick(View v) {
-                mExpandedPosition = isExpanded ? -1 : position;
+        holder.itemView.setOnClickListener(v -> {
+            mExpandedPosition = isExpanded ? -1 : position;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 TransitionManager.beginDelayedTransition(holder.detailsOnExpand);
-                notifyDataSetChanged();
             }
+            notifyDataSetChanged();
         });
     }
 
@@ -99,20 +80,18 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmHolder> {
         this.filmlist = filmlist;
     }
 
-    class FilmHolder extends RecyclerView.ViewHolder {
+    static class FilmHolder extends RecyclerView.ViewHolder {
         private Film filmObject;
 
-        private ImageView poster;
-        private TextView textViewTitle;
-        private TextView textViewGenre;
-        private TextView textViewRating;
-        private TextView expandIcon;
-        private TextView textViewDescription;
-        private RelativeLayout detailsOnExpand;
-        private RadioGroup radioGroup;
+        private final ImageView poster;
+        private final TextView textViewTitle;
+        private final TextView textViewGenre;
+        private final TextView textViewRating;
+        private final TextView expandIcon;
+        private final TextView textViewDescription;
+        private final RelativeLayout detailsOnExpand;
         List<RadioButton> buttons = new ArrayList<>();
-        private Button reserveButton;
-        private Button favorite;
+        private final Button favorite;
 
 
         public FilmHolder(final View itemView) {
@@ -126,51 +105,19 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.FilmHolder> {
             textViewDescription = itemView.findViewById(R.id.text_view_description);
             detailsOnExpand = itemView.findViewById(R.id.details_on_expand);
 
-            List<Integer> ids = Arrays.asList(R.id.radio1, R.id.radio2, R.id.radio3, R.id.radio4);
-            for (int i = 0; i < ids.size(); i++) {
-                final RadioButton button = itemView.findViewById(ids.get(i));
-                buttons.add(button);
-            }
-
-            radioGroup = itemView.findViewById(R.id.hour_choices);
-
-            reserveButton = itemView.findViewById(R.id.openPage);
-            reserveButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int selectedId = radioGroup.getCheckedRadioButtonId();
-                    RadioButton selectedButton = (RadioButton) itemView.findViewById(selectedId);
-                    if (selectedButton != null) {
-                        String selectedTime = (String) selectedButton.getText();
-                        openPage(filmObject, selectedTime);
-                    }
-                }
-            });
-
-
             favorite = itemView.findViewById(R.id.heart);
-            favorite.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    boolean isFavorite = Repository.searchInFavorites(filmObject);
-                    if (!isFavorite) {
-                        favorite.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_favorite_red_35dp, 0);
-                        filmObject.setFavorite(true);
-                        Repository.addToFavorites(filmObject);
-                    } else {
-                        favorite.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_favorite_border_black_35dp, 0);
-                        filmObject.setFavorite(false);
-                        Repository.deleteFromFavorites(filmObject);
-                    }
+            favorite.setOnClickListener(v -> {
+                boolean isFavorite = Repository.searchInFavorites(filmObject);
+                if (!isFavorite) {
+                    favorite.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_favorite_red_35dp, 0);
+                    filmObject.setFavorite();
+                    Repository.addToFavorites(filmObject);
+                } else {
+                    favorite.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_favorite_border_black_35dp, 0);
+                    filmObject.setFavorite();
+                    Repository.deleteFromFavorites(filmObject);
                 }
             });
-        }
-
-        private void openPage(Film film, String time) {
-            Intent intent = new Intent(contextGetter.getActivity(), MakeReservationActivity.class);
-            intent.putExtra("film", film);
-            intent.putExtra("time", time);
-            contextGetter.startActivity(intent);
         }
     }
 }
