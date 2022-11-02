@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionManager;
 import android.view.LayoutInflater;
@@ -20,15 +19,12 @@ import com.example.cinemaapp.model.Film;
 import com.example.cinemaapp.repository.Repository;
 
 import java.util.List;
-import java.util.Objects;
 
 public class FavoriteFilmAdapter extends RecyclerView.Adapter<FavoriteFilmAdapter.FavoriteFilmHolder> {
     private final List<Film> filmlist = Repository.favoriteList;
-    private final Fragment contextGetter;
     private int mExpandedPosition = -1;
 
-    public FavoriteFilmAdapter(Fragment contextGetter) {
-        this.contextGetter = contextGetter;
+    public FavoriteFilmAdapter() {
     }
 
     @NonNull
@@ -125,13 +121,6 @@ public class FavoriteFilmAdapter extends RecyclerView.Adapter<FavoriteFilmAdapte
                     filmlist.remove(position);
                     notifyItemRemoved(position);
                     notifyItemRangeChanged(position, filmlist.size());
-
-                    if (Repository.favoriteList.isEmpty()) {
-                        final TextView header = Objects.requireNonNull(contextGetter.getView()).findViewById(R.id.no_favorites_message_header);
-                        header.setVisibility(View.VISIBLE);
-                        final TextView body = contextGetter.getView().findViewById(R.id.no_favorites_message_body);
-                        body.setVisibility(View.VISIBLE);
-                    }
                 }
             });
         }

@@ -1,9 +1,8 @@
 <resources>
-    <string name="app_name">CinemaApp</string>
+    <string name="app_name">Boxnema</string>
     <string name="title_home">Home</string>
-    <string name="title_favorites">Favorites</string>
+    <string name="title_favorites">Loved</string>
     <string name="movieTitle">Title</string>
-    <string name="movieTime">13:30</string>
-    <string name="no_favorites_msg_header">No favorites yet</string>
-    <string name="no_favorites_msg_body">Tap the heart icon on a film to add it to your favorites list.</string>
+    <string name="movieTime">00:00</string>
+    <string name="todo">TODO</string>
 </resources>

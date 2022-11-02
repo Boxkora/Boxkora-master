@@ -12,9 +12,10 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="#FF9800"
         android:paddingBottom="40dp"
         app:layout_constraintBottom_toTopOf="@+id/navigation"
-        tools:layout_editor_absoluteX="8dp"
-        tools:ignore="UnknownIdInLayout" />
+        tools:ignore="UnknownIdInLayout"
+        tools:layout_editor_absoluteX="8dp" />
 
 </android.support.constraint.ConstraintLayout>

@@ -1,8 +1,5 @@
 <resources>
-
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -11,7 +8,6 @@
 
     <style name="TextAppearance.AppCompat.Widget.ActionBar.Title"
         parent="@android:style/TextAppearance">
-        <!-- style of the toolbar title -->
         <item name="android:textColor">@color/titleColor</item>
         <item name="android:textSize">22sp</item>
     </style>
@@ -20,5 +16,4 @@
         <!-- color of the toolbar back button -->
         <item name="colorControlNormal">@android:color/white</item>
     </style>
-
 </resources>
